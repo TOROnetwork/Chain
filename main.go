@@ -15,19 +15,18 @@ import (
 	"strings"
 	"time"
 
-	"Chain3Go/accounts/abi"
-	"Chain3Go/lib/common/hexutil"
+	"ChainGo/accounts/abi"
+	"ChainGo/toro/common/hexutil"
 
 	"fmt"
 
-	"Chain3Go"
-	"Chain3Go/requestData"
-	//	"Chain3Go/types"
-	//	"Chain3Go/utils"
+	"ChainGo"
+	"ChainGo/requestData"
+	//	"ChainGo/types"
+	//	"ChainGo/utils"
 )
 
 var (
-	//程序访问的getway服务器上的go程序，访问IP
 	//	getwayIp string = "http://127.0.0.1:9090"
 	getwayIp string = "http://47.107.99.26:9090"
 
@@ -83,7 +82,7 @@ func main() {
 	http.HandleFunc("/fstToSubChainCoin", fstToSubChainCoinHandle)
 	http.HandleFunc("/subChainCoinToFst", subChainCoinToFstHandle)
 	http.HandleFunc("/erc20Tx", erc20TxHandle)
-	http.HandleFunc("/LBRTx", LBRTxHandle)
+	http.HandleFunc("/TOROTx", TOROTxHandle)
 
 	log.Fatal(http.ListenAndServe(":8888", nil))
 }
@@ -576,8 +575,8 @@ func erc20TxHandle(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, reStr("fail", serverErr, nil))
 }
 
-//LBR转账 - 未测试
-func LBRTxHandle(w http.ResponseWriter, r *http.Request) {
+//TORO转账 - 未测试
+func TOROTxHandle(w http.ResponseWriter, r *http.Request) {
 
 	formAddr := r.FormValue("formAddress")
 	toAddr := r.FormValue("toAddress")
@@ -588,8 +587,8 @@ func LBRTxHandle(w http.ResponseWriter, r *http.Request) {
 	amountF, convErr := strconv.ParseFloat(amount, 64)
 	if convErr == nil {
 
-		var rpcClient *Chain3Go.RpcClient
-		rpcClient = Chain3Go.NewRpcClient(vnodeIp, netType)
+		var rpcClient *ChainGo.RpcClient
+		rpcClient = ChainGo.NewRpcClient(vnodeIp, netType)
 
 		nonce, nonceErr := rpcClient.Mc().MC_getTransactionCount(formAddr, "latest")
 		if nonceErr == nil {
@@ -642,8 +641,8 @@ func sendGetRequest(urlPath string) ([]byte, error) {
 //合约操作
 func contractOperate(sIp, operateType, hashData, formAddress, formKeystore, formKeystorePassword, to string) (string, error) {
 
-	//	var rpcClient *Chain3Go.RpcClient
-	//	rpcClient = Chain3Go.NewRpcClient(vnodeIp, netType)
+	//	var rpcClient *ChainGo.RpcClient
+	//	rpcClient = ChainGo.NewRpcClient(vnodeIp, netType)
 	//	var placeholderStr types.ComplexString = "0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002e"
 	//	txParams := new(requestData.TransactionParameters)
 	//	txParams.From = from
@@ -659,8 +658,8 @@ func contractOperate(sIp, operateType, hashData, formAddress, formKeystore, form
 	//	txParams.Data = opStr + placeholderStr + types.ComplexString(hex.EncodeToString([]byte(hashData)))
 	//	return rpcClient.Mc().SCS_directCall(txParams)
 
-	var tmpRpcClient *Chain3Go.RpcClient
-	tmpRpcClient = Chain3Go.NewRpcClient(sIp, netType) //子链
+	var tmpRpcClient *ChainGo.RpcClient
+	tmpRpcClient = ChainGo.NewRpcClient(sIp, netType) //子链
 	//	nonce, nonErr := tmpRpcClient.Mc().SCS_getNonce(to, formAddress)
 	nonce, nonErr := tmpRpcClient.Mc().ScsRPCMethod_GetNonce(to, formAddress)
 	if nonErr != nil {
@@ -762,8 +761,8 @@ func searchAddrBalance() {
 
 func searchSubChainAddrBalance() {
 
-	var tmpRpcClient *Chain3Go.RpcClient
-	tmpRpcClient = Chain3Go.NewRpcClient(subIp, netType) //子链
+	var tmpRpcClient *ChainGo.RpcClient
+	tmpRpcClient = ChainGo.NewRpcClient(subIp, netType) //子链
 
 	//	fmt.Println(tmpRpcClient.Mc().ScsRPCMethod_GetNonce(toAddress, "0xd58592114ebd97525856929d5c662b72d58b767b"))
 
@@ -809,7 +808,7 @@ func approve() {
 
 	bytes, _ := hexutil.Decode("0x095ea7b300000000000000000000000024e911d31d82f3482dd36451077d6f481da5167d00000000000000000000000000000000000000000000000000000000000000ff")
 
-	var rpcClient *Chain3Go.RpcClient
+	var rpcClient *ChainGo.RpcClient
 	rpcClient = Chain3Go.NewRpcClient(vnodeIp, netType) //子链
 	nonce, nonErr := rpcClient.Mc().MC_getTransactionCount("0xd58592114ebd97525856929d5c662b72d58b767b", "latest")
 
@@ -843,8 +842,8 @@ func buyMintToken() {
 
 	bytes, _ := hexutil.Decode("0xa1abbbc200000000000000000000000024e911d31d82f3482dd36451077d6f481da5167d000000000000000000000000000000000000000000000000000000000fffffff")
 
-	var rpcClient *Chain3Go.RpcClient
-	rpcClient = Chain3Go.NewRpcClient(vnodeIp, netType) //子链
+	var rpcClient *Chai3Go.RpcClient
+	rpcClient = ChainGo.NewRpcClient(vnodeIp, netType) //子链
 	nonce, nonErr := rpcClient.Mc().MC_getTransactionCount("0xd58592114ebd97525856929d5c662b72d58b767b", "latest")
 
 	if nonErr == nil {
